@@ -1,0 +1,228 @@
+<html lang="en" dir="ltr">
+	<style>
+		.box_login{
+			width:320px;padding:40px;position: absolute;top: 40%;left: 50%;transform: translate(-50%,-50%);text-align:center;border-radius: 24px;
+		}
+		
+		.box_login h1{
+		    color: white;text-transform: uppercase;font-weight: 500;font-size: 26px;line-height: 36px;
+		}
+		
+		.box_login input[type = "text"],.box_login input[type = "password"]{
+			border: 0;background: none;display: block;margin: 20px auto;text-align: center;border: 1px solid #4596ff;padding: 14px 10px;width: 200px;outline: none;color: white;border-radius: 24px;transition: 0.25s;
+		}
+		
+		.box_login input[type = "text"]:focus,.box_login input[type = "password"]:focus{
+		    width: 240px;border-color: #dbdbdb;
+		}
+		
+		#login_button_login{
+			border: 0;background: none;display: block;margin: 20px auto;text-align: center;border: 2px solid rgb(18, 167, 37);padding: 14px 40px;outline: none;color: white;border-radius: 24px;transition: 0.25s;cursor: pointer;
+		}
+		#login_button_login:hover{
+		    background: rgb(18, 167, 37);
+		}
+		
+	</style>
+	
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport"
+			content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" /> 
+
+	</head>
+
+	<body id="body" style="background-size:100%;">
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery-3.4.1.min.js"></script>
+		<script type="text/javascript">
+			mui.init()<!-- 页面初始化执行mui方法，初始化mui方法 -->
+		</script>
+
+
+		<form action="main.html" method="POST"> <!-- 定义点击连接页面-->
+
+		<div class="box_login" style="background-image: url(../img/logo1_box_bg.png);">
+			<div id="app"><h1 style="text-align: center; color: white;">{{ value }}</h1></div>
+			<div style="margin-bottom: 1.8rem;"></div>
+			<input type="text" placeholder="请输入用户" id="login_input_name">
+			<input type="password" placeholder="请输入密码" id="login_input_passwd">
+			<button type="button" style="width: 50%;" id="login_button_login">登录</button>
+			<!-- <div style="margin-top: 20px; text-align: center;  color: #2AC845;color: #C8C7CC ">
+			<h3>制作人:xxx</h3>
+			<h3>学号:xxx</h3>
+			<h3>学院:xxx</h3>
+			</div> -->
+		</div>
+		</form>
+
+	</body>
+	<script type="text/javascript" src="../js/project_config.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script>
+
+		
+		//登录验证
+		function login(url_login) {
+
+
+
+			$.ajax({
+				type: 'get',
+				dataType: "json",	<!-- 获取的数据格式为json -->
+				url: url_login,		
+				success: function(data) {
+
+					//如果服务器验证通过会返回 success,否则登录失败
+
+					for (let item of data) {
+					<!--遍历返回的数组，将数组每一项存放至本地 -->
+						if (item != null) {
+							var user_name = item.user_name;
+							var user_passwd = item.user_passwd;
+							var user_uid = item.uid;
+							var user_role = item.role;
+							var user_note = item.note;
+							console.log(url_login + "--------------");
+							localStorage.setItem(project_number + "user_name", user_name);
+							localStorage.setItem(project_number + "user_passwd", user_passwd);
+							localStorage.setItem(project_number + "user_uid", user_uid);
+							localStorage.setItem(project_number + "user_role", user_role);
+							localStorage.setItem(project_number + "user_note", user_note);
+
+							console.log(user_role);
+
+
+							window.location.replace("main.html"); //登录成功就跳转到传感器监测页面
+
+							return;
+						}
+
+					}
+					<!-- 调用mui方法显示弹窗 -->
+					mui.toast('验证失败', {
+						duration: 'long',
+						type: 'div'
+					});
+
+
+
+				},
+			});
+		}
+
+
+
+
+		//检查用户及密码输入是否为空
+		function login_check() {
+			var user_name = $("#login_input_name").val().replace(/\s+/g, "");<!-- 获取已输入的用户名称并去除空格 -->
+			var user_passwd = $("#login_input_passwd").val().replace(/\s+/g, "");<!-- 获取已输入的用户名称并去除空格 -->
+
+			if (user_name == "" || user_passwd == "") {
+				return false;
+			}
+
+			return true;
+		}
+
+
+		function my_login() {
+			//改函数负责登录验证
+
+
+			//login_check() 用来检查登录输入是否非空
+
+			if (login_check()) {
+				//如果登录输入的用户名合法,那么就进行远程登录验证.
+
+
+				//构建登录验证的http请求
+				var request_url = cfg_login_url + "?name=" + $("#login_input_name").val() + "&passwd=" + $(
+					"#login_input_passwd").val();
+
+				console.log(request_url);
+
+				login(request_url); //进行登录验证
+
+
+			} else {
+				mui.toast('用户名或密码为空，请检查！', {
+					duration: 'long',
+					type: 'div'
+				});
+			}
+		}
+
+		$("#login_button_login").click(my_login); //绑定点击事件,当登录按钮点击后调用 my_login函数进行登录处理
+	</script>
+
+	
+	<script type="text/javascript">
+		
+		function request_option(_self,item,callback) {
+			$.ajax({
+				type: "post",
+				dataType: "json",
+				url: cfg_video_url,
+				data:{
+					type:"get",
+					id:item,
+					value:0
+				},
+				success: function(data) {
+					callback(data.value);
+				},
+				error: function(data) {
+					
+				}
+			});
+		}
+		
+		
+		new Vue({
+			el: '#app',
+			data: {
+				value:"故障", //add default value here
+				flag_disable_refresh: false,
+		
+			},
+			
+			methods: {
+		
+				get_title() {
+	
+					_self = this;
+					
+					request_option(_self,"designName",function(data) {
+											
+						console.log(data);
+						_self.value = data;
+						
+					});
+					
+					request_option(_self,"background",function(data) {
+											
+						console.log(data);
+						document.getElementById("body").style.backgroundImage="url(../img/"+data+".jpg)";
+						
+					});
+	
+				},
+			},
+			
+			created() {
+				
+				this.get_title();
+				
+			}
+		})
+			
+	</script>
+	
+
+
+
+</html>

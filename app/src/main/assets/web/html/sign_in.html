@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+	</head>
+
+	<body style="background: #0080C0;">
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery-1.8.3.min.js"></script>
+		<script src="../js/project_config.js"></script>
+
+		<script type="text/javascript">
+			mui.init()
+		</script>
+
+
+		<!-- <h3 style="text-align: center; color: white;margin-top: 100px;">新用户注册</h3> -->
+
+		<header id="pay_jPanel1" class="mui-bar mui-bar-nav">
+			<span onclick="javascript:window.location.href='login.html'" class="mui-icon mui-icon-arrowleft"></span>
+			<h1 class="mui-title">新用户注册</h1>
+			<!--<span id="pay_jIconfont2" class="mui-icon mui-icon-bars mui-pull-right"></span>-->
+		</header>
+
+
+
+		<div style="margin:200px 50px;">
+
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label>用户名</label>
+					<input type="text" class="mui-input-clear" placeholder="请输入用户名" id="sign_name">
+				</div>
+				<div class="mui-input-row">
+					<label>密码</label>
+					<input type="password" class="mui-input-password" placeholder="请输入密码" id="sign_passwd">
+				</div>
+
+<!-- 				<div class="mui-input-row">
+					<label>性别</label>
+					<input type="text" class="mui-input-clear" placeholder="男 或 女" id="sign_sex">
+				</div> -->
+
+				<div class="mui-input-row">
+					<label>邮箱</label>
+					<input type="text" class="mui-input-clear" placeholder="请输入邮箱" id="sign_mail">
+				</div>
+
+				<div class="mui-input-row">
+					<label>电话</label>
+					<input type="text" class="mui-input-clear" placeholder="请输入电话" id="sign_phone">
+				</div>
+
+
+
+			</form>
+
+			<div class="mui-button-row" style="margin-top: 20px;">
+				<button type="button" class="mui-btn-success " style="width: 100%;" id="login_button_sign">注册登录</button>
+			</div>
+
+		</div>
+
+	</body>
+
+
+	<!-- ////////////////////////////////////////////////////////////////// -->
+	<!-- ////////////////////////////////////////////////////////////////// -->
+	<!-- ////////////////////////////////////////////////////////////////// -->
+	<!-- ////////////////////////////////////////////////////////////////// -->
+
+
+
+
+
+	<script>
+		
+		
+		
+		
+		function sign_in(url_login) {
+			$.ajax({
+				type: 'get',
+				dataType: "json",
+				url: url_login,
+				success: function(data) {
+					if (data.check == "success") {
+						
+
+						mui.confirm('注册成功', '你已经注册了新用户', ['直接登陆', '继续注册'], function(e) {
+							if (e.index == 0) {
+								window.location.replace("sensor_monitor.html");
+							} else {
+								mui.alert("继续注册");
+							}
+						})
+
+					} else if (data.check == "user_exist") {
+						mui.toast('用户已存在,请更改用户名', {
+							duration: 'long',
+							type: 'div'
+						});
+					} else {
+						mui.toast('注册失败，原因未知', {
+							duration: 'long',
+							type: 'div'
+						});
+					}
+				},
+			});
+		}
+
+
+
+
+		function my_login() {
+
+			var name = $("#sign_name").val().replace(/\s+/g, "");
+			var passwd = $("#sign_passwd").val().replace(/\s+/g, "");
+			var mail = $("#sign_mail").val().replace(/\s+/g, "");
+			var phone = $("#sign_phone").val().replace(/\s+/g, "");
+
+
+
+			if (name == "" || passwd == ""  || mail == "" || phone == "") {
+
+				mui.toast('注册信息不能为空，请检查！', {
+					duration: 'long',
+					type: 'div'
+				});
+
+				return;
+			}
+
+
+			var request_url = cfg_sign_in_url +
+								"?name=" + name +
+								"&passwd=" + passwd +
+								"&sex=" + passwd +
+								"&mail=" + passwd +
+								"&phone=" + passwd;
+			
+							console.log(request_url);
+			
+							sign_in(request_url);
+		}
+
+		$("#login_button_sign").click(my_login);
+	</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

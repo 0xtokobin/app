@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">设计</string>
+   <string name="main_webview_url">https://www.tencentiot.top</string>
+    <!-- <string name="main_webview_url">file:///android_asset/web/index.html</string> -->
+</resources>
